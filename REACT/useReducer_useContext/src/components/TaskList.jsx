@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 import { useAppContext } from "../AppProvider";
-import { FaRegTrashAlt, FaPen } from "react-icons/fa";
+import { FaRegTrashAlt, FaPen, FaHandPointRight } from "react-icons/fa";
 import { TbUrgent, TbThumbUp } from "react-icons/tb";
 import { MdPendingActions } from "react-icons/md";
 
@@ -8,30 +8,32 @@ export const TaskList = () => {
 
   const { tasksList, dispatch } = useAppContext();
 
-  const [ showEdit, setShowEdit ] = useState(false);
-  const [ editTask, setEditTask ] = useState({});
+  const [showEdit, setShowEdit] = useState(false);
+  const [editTask, setEditTask] = useState({});
+  const [filter, setFilter] = useState('all');
 
-  const handleRemoveTask = (id) => {
+  const handleRemoveTask = id => {
     dispatch({
-      type: 'REMOVE_TASK',
+      type: "REMOVE_TASK",
       payload: id
     });
-  }
+  };
 
   const prepareEditTask = task => {
     setShowEdit(true);
     setEditTask(task);
-  }
+  };
 
-  const handleEditTask = (e) => {
+  const handleEditTask = e => {
     e.preventDefault();
-    let repeat = tasksList.some((listedTask) => listedTask.name === editTask.name);
+    let repeat = tasksList.some(
+      (listedTask) => listedTask.name === editTask.name
+    );
     if (repeat) {
       alert("Repeated task, please enter another one...");
       setShowEdit(false);
       setEditTask({});
-    }
-    else {
+    } else {
       dispatch({
         type: "EDIT_TASK",
         payload: editTask,
@@ -39,87 +41,133 @@ export const TaskList = () => {
       setShowEdit(false);
       setEditTask({});
     }
-  }
+  };
 
-  const changeToPending = (id) => {
+  const changeToPending = id => {
     dispatch({
-      type: 'PENDING_TASK',
-      payload: id
+      type: "PENDING_TASK",
+      payload: id,
     });
-  }
+  };
 
-  const changeToUrgent = (id) => {
+  const changeToUrgent = id => {
     dispatch({
-      type: 'URGENT_TASK',
-      payload: id
+      type: "URGENT_TASK",
+      payload: id,
     });
-  }
+  };
 
-  const changeToCompleted = (id) => {
+  const changeToCompleted = id => {
     dispatch({
-      type: 'COMPLETED_TASK',
-      payload: id
+      type: "COMPLETED_TASK",
+      payload: id,
     });
+  };
+
+  const itemStyle = {
+    verticalAlign: "middle",
+    margin: "7px",
+    cursor: "pointer",
+  };
+
+  const radioFilter = e => {
+    setFilter(e.target.value);
   }
 
   return (
     <>
       <h3>Tasks List</h3>
+      <fieldset
+        className="radio-buttons"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "1rem",
+          marginBottom: "2rem",
+        }}
+        onChange={radioFilter}
+      >
+        <div>
+          <label htmlFor="all">All</label>
+          <input
+            type="radio"
+            name="state"
+            id="all"
+            value="all"
+            defaultChecked
+          />
+        </div>
+        <div>
+          <label htmlFor="pending">Pending</label>
+          <input type="radio" name="state" id="pending" value="pending" />
+        </div>
+        <div>
+          <label htmlFor="urgent">Urgent</label>
+          <input type="radio" name="state" id="urgent" value="urgent" />
+        </div>
+        <div>
+          <label htmlFor="completed">Completed</label>
+          <input type="radio" name="state" id="completed" value="completed" />
+        </div>
+      </fieldset>
       {tasksList.length > 0 ? (
-        <ul>
-          {tasksList.map((task, index) => {
-            return (
-              <li key={task.id} style={{ textAlign: 'left' }}>
-                {index + 1}: {task.name} ({task.completed})
-                <FaRegTrashAlt
-                  color="tomato"
-                  style={{
-                    verticalAlign: "middle",
-                    marginLeft: "7px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleRemoveTask(task.id)}
-                />
-                <FaPen
-                  color="lightblue"
-                  style={{
-                    verticalAlign: "middle",
-                    marginLeft: "7px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => prepareEditTask(task)}
-                />
-                <MdPendingActions
-                  color="yellow"
-                  style={{
-                    verticalAlign: "middle",
-                    marginLeft: "7px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => changeToPending(task.id)}
-                />
-                <TbUrgent
-                  color="orange"
-                  style={{
-                    verticalAlign: "middle",
-                    marginLeft: "7px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => changeToUrgent(task.id)}
-                />
-                <TbThumbUp
-                  color="green"
-                  style={{
-                    verticalAlign: "middle",
-                    marginLeft: "7px",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => changeToCompleted(task.id)}
-                />
-              </li>
-            );
-          })}
-        </ul>
+        <table style={{ margin: "15px auto" }}>
+          <tbody>
+            {tasksList.map((task) => {
+              if (task.completed === filter || filter === "all") {
+                return (
+                  <tr
+                    key={task.id}
+                    style={{
+                      textAlign: "left",
+                      marginBottom: "8px",
+                      listStyle: "none",
+                      fontSize: "1.1rem",
+                    }}
+                  >
+                    <td>
+                      <FaHandPointRight style={itemStyle} color="lightblue" />
+                      {task.name}({task.completed})
+                    </td>
+                    <td>
+                      <FaRegTrashAlt
+                        color="red"
+                        style={itemStyle}
+                        onClick={() => handleRemoveTask(task.id)}
+                      />
+                      <FaPen
+                        color="blue"
+                        style={ itemStyle}
+                        onClick={() => prepareEditTask(task)}
+                      />
+                      {task.completed !== "pending" ? (
+                        <MdPendingActions
+                          color="yellow"
+                          style={itemStyle}
+                          onClick={() => changeToPending(task.id)}
+                        />
+                      ) : null}
+                      {task.completed !== "urgent" ? (
+                        <TbUrgent
+                          color="orange"
+                          style={itemStyle}
+                          onClick={() => changeToUrgent(task.id)}
+                        />
+                      ) : null}
+                      {task.completed !== "completed" ? (
+                        <TbThumbUp
+                          color="lightgreen"
+                          style={itemStyle}
+                          onClick={() => changeToCompleted(task.id)}
+                        />
+                      ) : null}
+                    </td>
+                  </tr>
+                );
+              }
+            })}
+          </tbody>
+        </table>
       ) : (
         <p>No tasks...</p>
       )}
@@ -134,7 +182,7 @@ export const TaskList = () => {
               setEditTask({
                 id: editTask.id,
                 name: e.target.value,
-                completed: editTask.completed
+                completed: editTask.completed,
               })
             }
           />
@@ -143,4 +191,4 @@ export const TaskList = () => {
       ) : null}
     </>
   );
-}
+};

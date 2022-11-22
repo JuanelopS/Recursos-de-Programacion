@@ -1,22 +1,22 @@
-import './App.css'
+import './App.css';
 import { AppProvider } from './AppProvider';
 import { Form } from './components/Form';
 import { TaskList } from './components/TaskList';
-import { Tasks } from './components/Tasks';
+import { TasksResume } from './components/TasksResume';
 
 function App() {
 
   return (
     <AppProvider>
       <div>
-        <h1>useReducer + useContext</h1>
-        <Tasks />
+        <h2>useReducer + useContext</h2>
+        <TasksResume />
         <Form />
-        <hr />
+        <hr style={{ marginTop: '30px'}}/>
         <TaskList />
       </div>
     </AppProvider>
   )
 }
 
-export default App
+export default App;

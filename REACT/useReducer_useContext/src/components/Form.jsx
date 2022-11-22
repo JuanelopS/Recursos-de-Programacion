@@ -23,7 +23,7 @@ export const Form = () => {
   }
 
   return (
-    <form onSubmit={ handleSubmit }>
+    <form onSubmit={ handleSubmit } style={{ display: 'flex', gap: '1rem', justifyContent: 'center'}}>
       <input 
         type="text" 
         name="name" 

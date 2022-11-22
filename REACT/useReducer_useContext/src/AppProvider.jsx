@@ -1,17 +1,8 @@
 import React, { useReducer, useContext } from "react";
 
-const AppContext = React.createContext();
 
-const useAppContext = () => {
-  return useContext(AppContext);
-}
-
-const initialState = {
-  tasksList: []
-};
 
 const reducer = (state, action) => {
-  // console.log(action);
 
   switch(action.type){
     case 'ADD_TASK': {
@@ -80,7 +71,17 @@ const reducer = (state, action) => {
     }
   }
   return state;
-}
+};
+
+const AppContext = React.createContext();
+
+const useAppContext = () => {
+  return useContext(AppContext);
+};
+
+const initialState = {
+  tasksList: []
+};
 
 const AppProvider = ({ children }) => {
 
@@ -92,7 +93,6 @@ const AppProvider = ({ children }) => {
     </AppContext.Provider>
   )
 }
-
 
 export {
   AppProvider,
