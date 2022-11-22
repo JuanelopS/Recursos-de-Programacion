@@ -1,0 +1,11 @@
+-- instalación de dependencias (--save-dev -> para entorno de desarrollo local):
+
+npm i --save-dev @types/node nodemon ts-node typescript
+
+-- generación de archivo tsconfig.json (ecmascript 6 -> commonjs):
+	
+npx tsc --init --rootDir src --outDir build --esModuleInterop --resolveJsonModule --lib es6 --module commonjs --allowjs true --noImplicitAny true
+
+
+-- general builds de forma sencilla
+npm i --save-dev rimraf
